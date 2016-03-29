@@ -33,6 +33,9 @@ include(cmake/segwayrmp_serial.cmake)
 # Configure FTD2XX support
 include(cmake/segwayrmp_ftd2xx.cmake)
 
+# Configure Ethernet supported
+include(cmake/segway_ethernet.cmake)
+
 # Configure Graphical User Interface
 include(cmake/segwayrmp_gui.cmake)
 

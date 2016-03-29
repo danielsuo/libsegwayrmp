@@ -5,8 +5,9 @@
 #include <segwayrmp/impl/rmp_io.h>
 #include <segwayrmp/impl/rmp_ftd2xx.h>
 #if defined(SEGWAYRMP_USE_SERIAL)
-# include <segwayrmp/impl/rmp_serial.h>
+#include <segwayrmp/impl/rmp_serial.h>
 #endif
+#include <segwayrmp/impl/rmp_ethernet.h>
 
 #if !HAS_CLOCK_GETTIME
 # include <sys/time.h>
@@ -246,8 +247,7 @@ SegwayRMP::SegwayRMP(InterfaceType interface_type,
 #endif
       break;
     case ethernet:
-      RMP_THROW_MSG(ConfigurationException, "Ethernet is not currently "
-        "supported");
+      this->rmp_io_ = new EthernetRMPIO();
       break;
     case no_interface:
       // do nothing
@@ -274,6 +274,10 @@ SegwayRMP::~SegwayRMP()
   }
   if (this->interface_type_ == usb) {
     FTD2XXRMPIO * ptr = (FTD2XXRMPIO *)(this->rmp_io_);
+    delete ptr;
+  }
+  if (this->interface_type_ == ethernet) {
+    EthernetRMPIO * ptr = (EthernetRMPIO *)(this->rmp_io_);
     delete ptr;
   }
 }
@@ -947,4 +951,3 @@ void SegwayRMP::ProcessPacket_(Packet &packet)
     this->segway_status_ = SegwayStatus::Ptr(new SegwayStatus());
   }
 }
-
